@@ -1,0 +1,51 @@
+#!/usr/bin/env python
+
+import sys
+from shutil import which
+import subprocess
+import os
+
+
+def is_nvcc_present():
+    return which('nvcc') is not None
+
+
+def print_help():
+    print('hipcc - hip on nv compiler')
+    print('Author - Jatin Chaudhary (github:jatinx)\n')
+    print("Help for hipcc on nv")
+    print('\t--nvhip-help - Print this message')
+    print('\t--nvhip-lib-mode - Compile it in lib mode i.e. link')
+    print('\t--nvhip-debug-print - Print debug info for hipcc')
+
+
+if __name__ == '__main__':
+    if not is_nvcc_present():
+        print('Cant find nvcc, make sure its in PATH')
+        sys.exit(1)
+    install_path = os.environ.get('HIPNV_INSTALL_PATH')
+    nvcc_call = ['nvcc']
+    if install_path != None:
+        nvcc_call.append('-I' + install_path + '/include')
+        nvcc_call.append('-L' + install_path + '/lib')
+    debug_print = False
+    for arg in sys.argv[1:]:
+        if arg == '--nvhip-lib-mode':
+            nvcc_call.append('-DNV_HIP_RUNTIME_LIB_MODE=1')
+            nvcc_call.append('-lnvhip64')
+            continue
+        if arg == '--nvhip-debug-print':
+            debug_print = True
+            continue
+        if arg == '--nvhip-help':
+            print_help()
+            sys.exit(0)
+        nvcc_call.append(arg)
+
+    if debug_print:
+        if install_path == None:
+            print(
+                'warning: HIPNV_INSTALL_PATH is not set. Setting it will help hipcc add include/link flags')
+        print('nvcc call command: ', nvcc_call)
+
+    subprocess.call(nvcc_call)
