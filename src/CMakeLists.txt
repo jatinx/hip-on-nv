@@ -2,7 +2,7 @@ add_library(nvhip64 SHARED
     hipnv.cpp)
 
 target_link_directories(nvhip64 PUBLIC ${CUDA_PATH}/lib64)
-target_link_libraries(nvhip64 PUBLIC cudadevrt cudart_static)
+target_link_libraries(nvhip64 PUBLIC ${CUDA_LIBRARY} cudadevrt rt cuda cudart_static)
 
 install(
     DIRECTORY ${CMAKE_SOURCE_DIR}/include/
