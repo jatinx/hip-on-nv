@@ -1,6 +1,10 @@
 # hip-on-nv - HIP on nv platforms
 
-Inludes inline and library mode.
+Inludes inline and library mode. This is created to work with [PyHIP](https://github.com/jatinx/PyHIP) so that one python wrapper works seamlessly with both platforms.
+
+Make sure you use clang to build it.
+
+**Not ready for production. Still lot of work to be done, increase API coverage and complete error enums**.
 
 ## How to build
 
