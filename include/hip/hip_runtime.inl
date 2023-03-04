@@ -29,12 +29,25 @@ extern "C" {
 #endif
 
 enum hipError_t { hipSuccess, hipErrorInvalidValue };
+
 enum hipMemcpyKind {
   hipMemcpyHostToHost = 0,
   hipMemcpyHostToDevice = 1,
   hipMemcpyDeviceToHost = 2,
   hipMemcpyDeviceToDevice = 3,
   hipMemcpyDefault = 4
+};
+
+enum hipDeviceAttribute_t {
+  hipDeviceAttributeComputeCapabilityMajor = 23,
+  hipDeviceAttributeComputeCapabilityMinor = 61
+};
+
+enum hipLimit_t {
+  hipLimitStackSize = 0x0,
+  hipLimitPrintfFifoSize = 0x01,
+  hipLimitMallocHeapSize = 0x02,
+  hipLimitRange
 };
 
 typedef cudaStream_t hipStream_t;
@@ -51,6 +64,40 @@ NV_HIP_DECORATOR_HD inline hipError_t cudaError2hipError(cudaError_t error) {
     return hipSuccess;
   default:
     return hipErrorInvalidValue;
+  }
+}
+
+NV_HIP_DECORATOR_HD inline cudaError_t hipError2cudaError(hipError_t error) {
+  switch (error) {
+  case hipSuccess:
+    return cudaSuccess;
+  default:
+    return cudaErrorInvalidValue;
+  }
+}
+
+NV_HIP_DECORATOR_HD inline cudaDeviceAttr
+hipDevAttr2cudaDevAttr(hipDeviceAttribute_t attr) {
+  switch (attr) {
+  case hipDeviceAttributeComputeCapabilityMajor:
+    return cudaDevAttrComputeCapabilityMajor;
+  case hipDeviceAttributeComputeCapabilityMinor:
+    return cudaDevAttrComputeCapabilityMinor;
+  default:
+    return cudaDevAttrComputeCapabilityMinor;
+  }
+}
+
+NV_HIP_DECORATOR_HD inline cudaLimit hipLimit2cudaLimit(hipLimit_t limit) {
+  switch (limit) {
+  case hipLimitStackSize:
+    return cudaLimitStackSize;
+  case hipLimitPrintfFifoSize:
+    return cudaLimitPrintfFifoSize;
+  case hipLimitMallocHeapSize:
+    return cudaLimitMallocHeapSize;
+  default:
+    return cudaLimitMallocHeapSize;
   }
 }
 
@@ -350,6 +397,69 @@ hipError_t hipInit(unsigned int flags)
 #else
 {
   return cuError2hipError(cuInit(flags));
+}
+#endif
+
+NV_HIP_DECORATOR
+hipError_t hipGetDeviceCount(int *count)
+#ifdef NV_HIP_RUNTIME_LIB_MODE
+    ;
+#else
+{
+  return cudaError2hipError(cudaGetDeviceCount(count));
+}
+#endif
+
+NV_HIP_DECORATOR
+hipError_t hipDeviceGetAttribute(int *val, hipDeviceAttribute_t attr,
+                                 int device)
+#ifdef NV_HIP_RUNTIME_LIB_MODE
+    ;
+#else
+{
+  return cudaError2hipError(
+      cudaDeviceGetAttribute(val, hipDevAttr2cudaDevAttr(attr), device));
+}
+#endif
+
+NV_HIP_DECORATOR
+hipError_t hipDeviceSetLimit(hipLimit_t limit, size_t value)
+#ifdef NV_HIP_RUNTIME_LIB_MODE
+    ;
+#else
+{
+  return cudaError2hipError(
+      cudaDeviceSetLimit(hipLimit2cudaLimit(limit), value));
+}
+#endif
+
+NV_HIP_DECORATOR
+hipError_t hipDriverGetVersion(int *version)
+#ifdef NV_HIP_RUNTIME_LIB_MODE
+    ;
+#else
+{
+  return cudaError2hipError(cudaDriverGetVersion(version));
+}
+#endif
+
+NV_HIP_DECORATOR
+hipError_t hipRuntimeGetVersion(int *version)
+#ifdef NV_HIP_RUNTIME_LIB_MODE
+    ;
+#else
+{
+  return cudaError2hipError(cudaRuntimeGetVersion(version));
+}
+#endif
+
+NV_HIP_DECORATOR
+const char *hipGetErrorName(hipError_t error)
+#ifdef NV_HIP_RUNTIME_LIB_MODE
+    ;
+#else
+{
+  return cudaGetErrorName(hipError2cudaError(error));
 }
 #endif
 

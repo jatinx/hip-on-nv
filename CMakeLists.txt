@@ -1,5 +1,5 @@
-project(hip-on-nv)
 cmake_minimum_required(VERSION 3.16)
+project(hip-on-nv)
 
 find_package(CUDA REQUIRED)
 if(NOT DEFINED CUDA_PATH)
