@@ -169,6 +169,16 @@ hipError_t hipMemcpy(void *dst, void *src, size_t size, hipMemcpyKind direction)
 #endif
 
 NV_HIP_DECORATOR
+hipError_t hipMemset(void *dst, int val, size_t size)
+#ifdef NV_HIP_RUNTIME_LIB_MODE
+    ;
+#else
+{
+  return cudaError2hipError(cudaMemset(dst, val, size));
+}
+#endif
+
+NV_HIP_DECORATOR
 hipError_t hipStreamCreate(hipStream_t *stream)
 #ifdef NV_HIP_RUNTIME_LIB_MODE
     ;
@@ -288,6 +298,16 @@ hipError_t hipEventElapsedTime(float *ms, hipEvent_t start, hipEvent_t end)
 #else
 {
   return cudaError2hipError(cudaEventElapsedTime(ms, start, end));
+}
+#endif
+
+NV_HIP_DECORATOR
+hipError_t hipEventQuery(hipEvent_t event)
+#ifdef NV_HIP_RUNTIME_LIB_MODE
+    ;
+#else
+{
+  return cudaError2hipError(cudaEventQuery(event));
 }
 #endif
 
