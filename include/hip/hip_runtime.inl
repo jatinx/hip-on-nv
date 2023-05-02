@@ -56,7 +56,7 @@ typedef cudaDeviceProp hipDeviceProp_t;
 typedef cudaPointerAttributes hipPointerAttributes_t;
 typedef CUmodule hipModule_t;
 typedef CUfunction hipFunction_t;
-typedef void* hipDeviceptr_t;
+typedef CUdeviceptr hipDeviceptr_t;
 typedef CUmodule hipModule_t;
 
 NV_HIP_DECORATOR_HD inline hipError_t cudaError2hipError(cudaError_t error) {
