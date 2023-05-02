@@ -56,6 +56,7 @@ typedef cudaDeviceProp hipDeviceProp_t;
 typedef cudaPointerAttributes hipPointerAttributes_t;
 typedef CUmodule hipModule_t;
 typedef CUfunction hipFunction_t;
+typedef CUdeviceptr hipDeviceptr_t;
 typedef CUmodule hipModule_t;
 
 NV_HIP_DECORATOR_HD inline hipError_t cudaError2hipError(cudaError_t error) {
@@ -370,6 +371,17 @@ hipError_t hipModuleGetFunction(hipFunction_t *hfunc, hipModule_t hmod,
 #else
 {
   return cuError2hipError(cuModuleGetFunction(hfunc, hmod, name));
+}
+#endif
+
+NV_HIP_DECORATOR
+hipError_t hipModuleGetGlobal(hipDeviceptr_t *dptr, size_t *bytes,
+                              hipModule_t hmod, const char *name)
+#ifdef NV_HIP_RUNTIME_LIB_MODE
+    ;
+#else
+{
+  return cuError2hipError(cuModuleGetGlobal(dptr, bytes, hmod, name));
 }
 #endif
 
