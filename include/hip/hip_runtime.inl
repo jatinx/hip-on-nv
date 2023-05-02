@@ -376,7 +376,7 @@ hipError_t hipModuleGetFunction(hipFunction_t *hfunc, hipModule_t hmod,
 
 NV_HIP_DECORATOR
 hipError_t hipModuleGetGlobal(hipDeviceptr_t *dptr, size_t *bytes,
-					  hipModule_t hmod, const char *name)
+                              hipModule_t hmod, const char *name)
 #ifdef NV_HIP_RUNTIME_LIB_MODE
     ;
 #else
